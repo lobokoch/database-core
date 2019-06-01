@@ -1,0 +1,14 @@
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\ServiceConnectionProvider.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\MultiTenantJpaConfiguration.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\entity\AuditorAwareImpl.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\entity\BaseEntity.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\PostgreSQLDataSourceProvider.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\DataSourceProvider.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\Database.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\BaseConnectionProvider.java
+D:\git\database-core\target\generated-sources\java\br\com\kerubin\api\database\entity\QAuditingEntity.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\entity\AuditingEntity.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\ServiceContext.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\TenantIdentifierResolver.java
+D:\git\database-core\target\generated-sources\java\br\com\kerubin\api\database\entity\QBaseEntity.java
+D:\git\database-core\src\main\java\br\com\kerubin\api\database\core\ServiceMultiTenantConnectionProvider.java
