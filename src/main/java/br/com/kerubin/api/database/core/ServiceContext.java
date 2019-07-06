@@ -18,16 +18,19 @@ public class ServiceContext {
 	private static Function<String, String> defaultTenantProvider;
 	
 	
+	public static String getUserTenant() {
+		return TENANT_IDENTIFIER.get();		
+	}
+	
 	public static String getTenant() {
-		String tenant = TENANT_IDENTIFIER.get();
-		if (isEmpty(tenant)) {
-			if (hasDefaultTenantProvider()) {
-				tenant = defaultTenantProvider.apply(DEFAULT_TENANT_IDENTIFIER);
-			}
-			else {
-				tenant = DEFAULT_TENANT_IDENTIFIER;
-			}
+		String tenant = DEFAULT_TENANT_IDENTIFIER;
+		if (hasDefaultTenantProvider()) {
+			tenant = defaultTenantProvider.apply(tenant);
 		}
+		else {
+			tenant = TENANT_IDENTIFIER.get();
+		}
+		
 		return isNotEmpty(tenant) ? tenant : DEFAULT_TENANT_IDENTIFIER;
 	}
 	
