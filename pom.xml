@@ -25,9 +25,16 @@
 		<flyway.core.version>5.2.4</flyway.core.version>
 		<apt.maven.plugin.version>1.1.1</apt.maven.plugin.version>
 		<querydsl.version>4.2.1</querydsl.version>
+		<lombok.version>1.18.8</lombok.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>

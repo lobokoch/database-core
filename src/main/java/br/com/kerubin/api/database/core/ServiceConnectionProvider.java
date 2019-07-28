@@ -12,6 +12,9 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ServiceConnectionProvider extends BaseConnectionProvider {
 	
 	public static final ServiceConnectionProvider INSTANCE = new ServiceConnectionProvider();
@@ -50,15 +53,20 @@ public class ServiceConnectionProvider extends BaseConnectionProvider {
     private void flywayMigrateTenant(String tenantId, DataSource tenantDataSource) {
     	String defaultSchemaName = TenantIdentifierResolver.getSchemaNameByTenant(ServiceContext.DEFAULT_TENANT_IDENTIFIER);
     	if (!defaultSchemaName.equals(tenantId) || isMigrateDefaultTenant()) {
-    		System.out.println("START Flyway");
-    		FluentConfiguration flywayConfig = Flyway.configure();
-    		flywayConfig
-    			.dataSource(tenantDataSource)
-    			.schemas(tenantId);
-    		
-    		Flyway flyway = flywayConfig.load();
-    		flyway.migrate();
-    		System.out.println("END Flyway");
+    		try {
+    			log.info("Starting Flyway migration for tenant: {}...", tenantId);
+	    		
+    			FluentConfiguration flywayConfig = Flyway.configure();
+	    		flywayConfig.dataSource(tenantDataSource).schemas(tenantId);
+	    		Flyway flyway = flywayConfig.load();
+	    		flyway.migrate();
+	    		
+	    		log.info("DONE! Flyway migration for tenant: {}...", tenantId);
+    		}
+    		catch (Exception e) {
+    			log.error("Flyway migration for tenant: " + tenantId + " failed with error: " + e.getMessage(), e);
+    			throw e;
+    		}
     	}
 		
 	}
