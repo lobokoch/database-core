@@ -1,10 +1,15 @@
 package br.com.kerubin.api.database.core;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.Location;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
@@ -21,8 +26,10 @@ public class ServiceConnectionProvider extends BaseConnectionProvider {
 	
 	private boolean migrateDefaultTenant;
 	
+	private Set<String> flyWayLocations = new LinkedHashSet<>();
+	
 	public ServiceConnectionProvider() {
-		//System.out.println("ServiceConnectionProvider criado");
+		// Nothing to do for now.
 	}
 	
 	public void addTenantConnectionProvider(String tenantId) {
@@ -55,12 +62,31 @@ public class ServiceConnectionProvider extends BaseConnectionProvider {
     	if (!defaultSchemaName.equals(tenantId) || isMigrateDefaultTenant()) {
     		try {
     			log.info("Starting Flyway migration for tenant: {}...", tenantId);
+    			flyWayLocations.clear();
 	    		
     			FluentConfiguration flywayConfig = Flyway.configure();
+    			
+    			String domain = ServiceContext.getDomain();
+    			String service = ServiceContext.getService();
+    			String accountType = ServiceContext.getTenatAccountType();
+    			
+    			String commonLocation = MessageFormat.format("classpath:db/migration/{0}/{1}/PostgreSql/common", domain, service);
+    			String accountTypeLocation = MessageFormat.format("classpath:db/migration/{0}/{1}/PostgreSql/{2}", domain, service, accountType);
+    			flyWayLocations.add(commonLocation);
+    			flyWayLocations.add(accountTypeLocation);
+    			
+    			if (!flyWayLocations.isEmpty()) {
+    				flywayConfig.locations(flyWayLocations.toArray(new String[0]));
+    			}
+    			
+    			Location[] locations = flywayConfig.getLocations();
+    			log.info("flywayConfig.getLocations:" + Arrays.asList(locations));
+    			
 	    		flywayConfig.dataSource(tenantDataSource).schemas(tenantId);
 	    		Flyway flyway = flywayConfig.load();
 	    		flyway.migrate();
 	    		
+	    		flyWayLocations.clear();
 	    		log.info("DONE! Flyway migration for tenant: {}...", tenantId);
     		}
     		catch (Exception e) {

@@ -6,17 +6,38 @@ public class ServiceContext {
 	
 	public static final String DEFAULT_TENANT_IDENTIFIER = "kerubin";
 	public static final String DEFAULT_USER = "kerubin";
+	public static final String TENANT_ACCOUNT_TYPE_CORPORATE = "CORPORATE"; 
+	public static final String TENANT_ACCOUNT_TYPE_PERSONAL = "PERSONAL"; 
 	
 	private static String defaultDomain;
 	private static String defaultService;
 	
 	private static final ThreadLocal<String> TENANT_IDENTIFIER = new ThreadLocal<>();
+	private static final ThreadLocal<String> TENANT_ACCOUNT_TYPE = new ThreadLocal<>();
 	private static final ThreadLocal<String> USER = new ThreadLocal<>();
 	private static final ThreadLocal<String> DOMAIN = new ThreadLocal<>();
 	private static final ThreadLocal<String> SERVICE = new ThreadLocal<>();
 	
 	private static Function<String, String> defaultTenantProvider;
 	
+	public static void setTenantAccountType(String accountType) {
+		if (isEmpty(accountType)) {
+			accountType = TENANT_ACCOUNT_TYPE_PERSONAL;
+		}
+		TENANT_ACCOUNT_TYPE.set(accountType);
+	}
+	
+	public static void clearTenantAccountType() {
+		TENANT_ACCOUNT_TYPE.remove();
+	}
+	
+	public static String getTenatAccountType() {
+		String accountType = TENANT_ACCOUNT_TYPE.get();
+		if (isEmpty(accountType)) {
+			return TENANT_ACCOUNT_TYPE_PERSONAL;
+		}
+		return accountType;
+	}
 	
 	public static String getUserTenant() {
 		return TENANT_IDENTIFIER.get();		
@@ -75,6 +96,7 @@ public class ServiceContext {
 	
 	public static void clear() {
 		clearTenant();
+		clearTenantAccountType();
 		clearUser();
 	}
 	
