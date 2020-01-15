@@ -33,7 +33,6 @@ public class MultiTenantJpaConfiguration {
 	// https://tech.asimio.net/2017/01/17/Multitenant-applications-using-Spring-Boot-JPA-Hibernate-and-Postgres.html
 	// https://bitbucket.org/asimio/springboot-hibernate-multitenancy/src/3aced9ec0b9fd8f3d0266302e8581f1aae2afe82/src/main/java/com/asimio/demo/config/dvdrental/MultiTenantJpaConfiguration.java?at=master&fileviewer=file-view-default
 	
-	
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(CurrentTenantIdentifierResolver currentTenantIdentifierResolver) {
 		

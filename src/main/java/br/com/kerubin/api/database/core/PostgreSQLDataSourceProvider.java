@@ -1,12 +1,14 @@
 package br.com.kerubin.api.database.core;
 
+import static br.com.kerubin.api.database.util.Utils.getProp;
+import static br.com.kerubin.api.database.util.Utils.getPropInt;
+
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.PostgreSQL95Dialect;
 import org.postgresql.ds.PGSimpleDataSource;
-import static br.com.kerubin.api.database.util.Utils.*;
 
 public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 	
@@ -14,12 +16,18 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 	private static final String DB_USER_KEY = "DB_USER";
 	private static final String DB_PASSWORD_KEY = "DB_PASSWORD";
 	private static final String DB_SERVER_NAME_KEY = "DB_HOST";
+	private static final String DB_PORT_NUMBER_KEY = "DB_PORT";
 	
 	private static final String DB_NAME = "kerubin";
 	private static final String DB_USER = "postgres";
 	private static final String DB_PASSWORD = "mk";
 	private static final String DB_SERVER_NAME = "localhost";
-
+	private static final int DB_PORT_NUMBER = 5432;
+	
+	public PostgreSQLDataSourceProvider() {
+		// 
+	}
+	
     @Override
     public String hibernateDialect() {
         return PostgreSQL95Dialect.class.getName();
@@ -28,10 +36,11 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
     @Override
     public DataSource dataSource() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setServerName(getHost());
+        dataSource.setPortNumber(getPortNumber());
         dataSource.setDatabaseName(getDatabaseName());
-        dataSource.setServerName(getDatabaseHost());
-        dataSource.setUser(username());
-        dataSource.setPassword(password());
+        dataSource.setUser(getUser());
+        dataSource.setPassword(getPassword());
         return dataSource;
     }
 
@@ -44,41 +53,49 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
     public Properties dataSourceProperties() {
         Properties properties = new Properties();
         properties.setProperty("databaseName", getDatabaseName());
-        properties.setProperty("serverName", getDatabaseHost());
-        properties.setProperty("user", username());
-        properties.setProperty("password", password());
+        properties.setProperty("serverName", getHost());
+        properties.setProperty("user", getUser());
+        properties.setProperty("password", getPassword());
         return properties;
     }
     
+    @Override
     public String getDatabaseName() {
-    	String databaseName = getEnvDef(DB_NAME_KEY, DB_NAME);
+    	String databaseName = getProp(DB_NAME_KEY, DB_NAME);
     	return databaseName;
     }
     
-    public String getDatabaseHost() {
-    	String host = getEnvDef(DB_SERVER_NAME_KEY, DB_SERVER_NAME);
+    @Override
+    public int getPortNumber() {
+    	int portNumber = getPropInt(DB_PORT_NUMBER_KEY, DB_PORT_NUMBER);
+    	return portNumber;
+    }
+    
+    @Override
+    public String getHost() {
+    	String host = getProp(DB_SERVER_NAME_KEY, DB_SERVER_NAME);
     	return host;
     }
 
     @Override
-    public String url() {
+    public String getUrl() {
         return null;
     }
 
     @Override
-    public String username() {
-    	String username = System.getProperty(DB_USER_KEY, DB_USER);
+    public String getUser() {
+    	String username = getProp(DB_USER_KEY, DB_USER);
         return username;
     }
 
     @Override
-    public String password() {
-    	String password = getEnvDef(DB_PASSWORD_KEY, DB_PASSWORD);
+    public String getPassword() {
+    	String password = getProp(DB_PASSWORD_KEY, DB_PASSWORD);
         return password;
     }
 
     @Override
-    public Database database() {
+    public Database getDatabase() {
         return Database.POSTGRESQL;
     }
     

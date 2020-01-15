@@ -19,12 +19,18 @@ public interface DataSourceProvider {
 
 	Properties dataSourceProperties();
 
-	String url();
+	String getUrl();
 
-	String username();
+	String getUser();
 
-	String password();
+	String getPassword();
+	
+	int getPortNumber();
+	
+	String getHost();
+	
+	String getDatabaseName();
 
-	Database database();
+	Database getDatabase();
 
 }

@@ -128,6 +128,29 @@ public class ServiceContext {
 		defaultService = service;
 	}
 	
+	public static ServiceContextData getServiceContextData() {
+		
+		ServiceContextData context = ServiceContextData.builder()
+		.tenant(ServiceContext.getTenant())
+		.tenantAccountType(ServiceContext.getTenatAccountType())
+		.username(ServiceContext.getUser())
+		.domain(ServiceContext.getDomain())
+		.service(ServiceContext.getService())
+		.build();
+		
+		return context;	
+		
+	}
+	
+	public static void applyServiceContextData(ServiceContextData data) {
+		ServiceContext.setTenant(data.getTenant());
+		ServiceContext.setUser(data.getUsername());
+		ServiceContext.setTenantAccountType(data.getTenantAccountType());
+		
+		ServiceContext.setDomain(data.getDomain());
+		ServiceContext.setService(data.getService());
+	}
+	
 
 }
 

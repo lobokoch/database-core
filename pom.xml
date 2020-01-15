@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -20,6 +21,7 @@
 		<HikariCP.version>3.3.1</HikariCP.version>
 		<springframework.context.version>5.1.6.RELEASE</springframework.context.version>
 		<springframework.data.version>2.0.2.RELEASE</springframework.data.version>
+		<springframework.boot.version>2.0.1.RELEASE</springframework.boot.version>
 		<hibernate.core.version>5.2.16.Final</hibernate.core.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<flyway.core.version>5.2.4</flyway.core.version>
@@ -45,6 +47,19 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 			<version>${springframework.data.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${springframework.boot.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure-processor</artifactId>
+			<version>${springframework.boot.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
