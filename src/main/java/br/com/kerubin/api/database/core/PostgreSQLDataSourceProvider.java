@@ -18,9 +18,9 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 	private static final String DB_SERVER_NAME_KEY = "DB_HOST";
 	private static final String DB_PORT_NUMBER_KEY = "DB_PORT";
 	
-	private static final String DB_NAME = "kerubin";
-	private static final String DB_USER = "postgres";
-	private static final String DB_PASSWORD = "mk";
+	private static final String DB_NAME = "kerubin_aws";
+	private static final String DB_USER = "kb_lobo_mk_181269";
+	private static final String DB_PASSWORD = "sNiwCau1896_LzP";
 	private static final String DB_SERVER_NAME = "localhost";
 	private static final int DB_PORT_NUMBER = 5432;
 	
