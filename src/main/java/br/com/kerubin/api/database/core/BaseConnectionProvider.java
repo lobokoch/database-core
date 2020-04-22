@@ -53,9 +53,9 @@ public class BaseConnectionProvider {
 
     protected HikariConfig hikariConfig(DataSource dataSource) {
         HikariConfig hikariConfig = new HikariConfig();
-        int cpuCores = Runtime.getRuntime().availableProcessors();
-        hikariConfig.setMaximumPoolSize(cpuCores * 2);
-        hikariConfig.setMinimumIdle(0);
+        // int cpuCores = Runtime.getRuntime().availableProcessors();
+        hikariConfig.setMaximumPoolSize(30);
+        hikariConfig.setMinimumIdle(1);
         
         hikariConfig.setIdleTimeout(60000);
         hikariConfig.setDataSource(dataSource);

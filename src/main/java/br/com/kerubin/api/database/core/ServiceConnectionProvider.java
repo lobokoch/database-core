@@ -3,8 +3,12 @@ package br.com.kerubin.api.database.core;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sql.DataSource;
 
@@ -15,7 +19,7 @@ import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
-import org.postgresql.ds.PGSimpleDataSource;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,37 +28,60 @@ public class ServiceConnectionProvider extends BaseConnectionProvider {
 	
 	public static final ServiceConnectionProvider INSTANCE = new ServiceConnectionProvider();
 	
+	public static final String DEFAULT_CONNECTION_ID = "DEFAULT_CONNECTION_ID";
+	
 	private boolean migrateDefaultTenant;
 	
 	private Set<String> flyWayLocations = new LinkedHashSet<>();
+	private static final Map<String, Object> MIGRATION_SCHEMAS = new ConcurrentHashMap<>(); 
+	
+	private static final Lock lockDataSource = new ReentrantLock();
+	private static final Lock lockMigration = new ReentrantLock();
 	
 	public ServiceConnectionProvider() {
 		// Nothing to do for now.
 	}
 	
 	public void addTenantConnectionProvider(String tenantId) {
+		DataSource dataSource = null;
 		
-		if ( ServiceMultiTenantConnectionProvider.INSTANCE.getConnectionProviderMap().containsKey(tenantId)) {
-			return;
-		}
+		if (!ServiceMultiTenantConnectionProvider.INSTANCE.getConnectionProviderMap().containsKey(DEFAULT_CONNECTION_ID)) {
+			
+			lockDataSource.lock();
+			try {
+				if (!ServiceMultiTenantConnectionProvider.INSTANCE.getConnectionProviderMap().containsKey(DEFAULT_CONNECTION_ID)) {
+					dataSource = database().dataSourceProvider().dataSource();
+					Properties properties = properties();
+					properties.put(Environment.DATASOURCE, dataSource);
+					addTenantConnectionProvider(DEFAULT_CONNECTION_ID, dataSource, properties);
+				} // if
+			} finally {
+				lockDataSource.unlock();
+			}
+			
+		} // if
 		
-        PGSimpleDataSource defaultDataSource = (PGSimpleDataSource) database().dataSourceProvider().dataSource();
-
-        PGSimpleDataSource tenantDataSource = new PGSimpleDataSource();
-        tenantDataSource.setDatabaseName(defaultDataSource.getDatabaseName());
-        tenantDataSource.setCurrentSchema(tenantId);
-        tenantDataSource.setServerName(defaultDataSource.getServerName());
-        tenantDataSource.setUser(defaultDataSource.getUser());
-        tenantDataSource.setPassword(defaultDataSource.getPassword());
-
-        Properties properties = properties();
-        properties.put(
-                Environment.DATASOURCE,
-                /*dataSourceProxyType().dataSource(*/tenantDataSource/*)*/
-        );
-
-        addTenantConnectionProvider(tenantId, tenantDataSource, properties);
-        flywayMigrateTenant(tenantId, tenantDataSource);
+		if (!MIGRATION_SCHEMAS.containsKey(tenantId)) {
+			
+			lockMigration.lock();
+			try {
+				
+				if (!MIGRATION_SCHEMAS.containsKey(tenantId)) {
+					if (dataSource == null) {
+						ConnectionProvider connectionProvider = ServiceMultiTenantConnectionProvider.INSTANCE
+								.getConnectionProviderMap().get(DEFAULT_CONNECTION_ID);
+						
+						dataSource = ((DatasourceConnectionProviderImpl) connectionProvider).getDataSource();
+					}
+					
+					flywayMigrateTenant(tenantId, dataSource);
+					MIGRATION_SCHEMAS.put(tenantId, tenantId);
+				} // if
+			} finally {
+				lockMigration.unlock();
+			}
+			
+		} // if
     }
     
     private void flywayMigrateTenant(String tenantId, DataSource tenantDataSource) {
@@ -102,7 +129,6 @@ public class ServiceConnectionProvider extends BaseConnectionProvider {
         connectionProvider.setDataSource(tenantDataSource);
         connectionProvider.configure(properties);
         ServiceMultiTenantConnectionProvider.INSTANCE.getConnectionProviderMap().put(tenantId, connectionProvider);
-        //System.out.println(ServiceMultiTenantConnectionProvider.INSTANCE.getConnectionProviderMap());
     }
 
     @Override
