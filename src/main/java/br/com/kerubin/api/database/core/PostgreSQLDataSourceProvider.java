@@ -1,7 +1,7 @@
 package br.com.kerubin.api.database.core;
 
-import static br.com.kerubin.api.database.util.Utils.getProp;
 import static br.com.kerubin.api.database.util.Utils.getPropInt;
+import static br.com.kerubin.api.database.util.Utils.getPropStrict;
 
 import java.util.Properties;
 
@@ -18,9 +18,9 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 	private static final String DB_SERVER_NAME_KEY = "DB_HOST";
 	private static final String DB_PORT_NUMBER_KEY = "DB_PORT";
 	
-	private static final String DB_NAME = "kerubin_aws";
-	private static final String DB_USER = "kb_lobo_mk_181269";
-	private static final String DB_PASSWORD = "sNiwCau1896_LzP";
+	private static final String DB_NAME = null;
+	private static final String DB_USER = null;
+	private static final String DB_PASSWORD = null;
 	private static final String DB_SERVER_NAME = "localhost";
 	private static final int DB_PORT_NUMBER = 5432;
 	
@@ -61,7 +61,7 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String getDatabaseName() {
-    	String databaseName = getProp(DB_NAME_KEY, DB_NAME);
+    	String databaseName = getPropStrict(DB_NAME_KEY, DB_NAME);
     	return databaseName;
     }
     
@@ -73,7 +73,7 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String getHost() {
-    	String host = getProp(DB_SERVER_NAME_KEY, DB_SERVER_NAME);
+    	String host = getPropStrict(DB_SERVER_NAME_KEY, DB_SERVER_NAME);
     	return host;
     }
 
@@ -84,13 +84,13 @@ public class PostgreSQLDataSourceProvider implements DataSourceProvider {
 
     @Override
     public String getUser() {
-    	String username = getProp(DB_USER_KEY, DB_USER);
+    	String username = getPropStrict(DB_USER_KEY, DB_USER);
         return username;
     }
 
     @Override
     public String getPassword() {
-    	String password = getProp(DB_PASSWORD_KEY, DB_PASSWORD);
+    	String password = getPropStrict(DB_PASSWORD_KEY, DB_PASSWORD);
         return password;
     }
 

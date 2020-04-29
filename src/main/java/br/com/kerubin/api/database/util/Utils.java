@@ -1,5 +1,9 @@
 package br.com.kerubin.api.database.util;
 
+import java.text.MessageFormat;
+
+import br.com.kerubin.api.database.core.KerubinDatabaseException;
+
 public class Utils {
 	
 	public static boolean isNotEmpty(Object value) {
@@ -31,6 +35,16 @@ public class Utils {
 		if (isEmpty(value)) {
 			value = defVal;
 		}
+		return value;
+	}
+	
+	public static String getPropStrict(String name, String defVal) {
+		String value = getProp(name, defVal);
+		
+		if (isEmpty(value)) {
+			throw new KerubinDatabaseException(MessageFormat.format("Property \"{0}\" does not have a value.", name)) ;
+		}
+		
 		return value;
 	}
 	
