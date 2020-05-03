@@ -88,7 +88,7 @@ public class ServiceMultiTenantConnectionProvider extends AbstractMultiTenantCon
 	}
 	
     public String getSchemaChangeCommand(String schema) {
-        String result = MessageFormat.format("SET SEARCH_PATH TO ''{0}'';", schema);
+        String result = MessageFormat.format("SET SEARCH_PATH TO {0}, public;", schema);
         log.info("Changing schema to: {}", result);
         return result;
     }
