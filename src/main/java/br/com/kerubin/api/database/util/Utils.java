@@ -38,6 +38,10 @@ public class Utils {
 		return value;
 	}
 	
+	public static String getPropStrict(String name) {
+		return getPropStrict(name, null);
+	}
+	
 	public static String getPropStrict(String name, String defVal) {
 		String value = getProp(name, defVal);
 		
