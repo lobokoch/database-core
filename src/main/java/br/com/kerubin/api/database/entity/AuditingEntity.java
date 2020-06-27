@@ -19,19 +19,19 @@ public class AuditingEntity extends BaseEntity {
 	
 	@Column(name = "created_by", nullable = false, updatable = false)
     @CreatedBy
-    private String createdBy;
+    protected String createdBy;
 	
 	@Column(name = "created_date", nullable = false, updatable = false)
 	@CreatedDate
-	private LocalDateTime createdDate;
+	protected LocalDateTime createdDate;
 	
 	@Column(name = "last_modified_by")
 	@LastModifiedBy
-	private String lastModifiedBy;
+	protected String lastModifiedBy;
 
 	@Column(name = "last_modified_date")
 	@LastModifiedDate
-	private LocalDateTime lastModifiedDate;
+	protected LocalDateTime lastModifiedDate;
 
 	public String getCreatedBy() {
 		return createdBy;
