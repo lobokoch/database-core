@@ -23,7 +23,7 @@
 		<springframework.data.version>2.0.2.RELEASE</springframework.data.version>
 		<springframework.boot.version>2.0.1.RELEASE</springframework.boot.version>
 		<hibernate.core.version>5.2.16.Final</hibernate.core.version>
-		<postgresql.version>42.2.5</postgresql.version>
+		<postgresql.version>42.4.1</postgresql.version>
 		<flyway.core.version>5.2.4</flyway.core.version>
 		<apt.maven.plugin.version>1.1.1</apt.maven.plugin.version>
 		<querydsl.version>4.2.1</querydsl.version>
